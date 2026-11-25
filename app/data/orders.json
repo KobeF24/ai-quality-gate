@@ -1,0 +1,53 @@
+[
+  {
+    "id": "ORD-1001", "customerEmail": "lea@demo.test", "status": "delivered",
+    "orderedAt": "2026-09-02", "deliveredAt": "2026-09-06",
+    "items": [{ "name": "Perceuse-visseuse 18 V", "quantity": 1, "unitPrice": 89.9 }],
+    "total": 89.9
+  },
+  {
+    "id": "ORD-1002", "customerEmail": "lea@demo.test", "status": "delivered",
+    "orderedAt": "2026-11-03", "deliveredAt": "2026-11-07",
+    "items": [
+      { "name": "Lampadaire en verre", "quantity": 1, "unitPrice": 129 },
+      { "name": "Ampoule LED E27", "quantity": 2, "unitPrice": 6.5 }
+    ],
+    "total": 142
+  },
+  {
+    "id": "ORD-1003", "customerEmail": "lea@demo.test", "status": "return_in_progress",
+    "orderedAt": "2026-10-14", "deliveredAt": "2026-10-18",
+    "items": [{ "name": "Store enrouleur 120 cm", "quantity": 1, "unitPrice": 39.9 }],
+    "total": 39.9
+  },
+  {
+    "id": "ORD-1004", "customerEmail": "marco@demo.test", "status": "shipped",
+    "orderedAt": "2026-11-20",
+    "items": [{ "name": "Mitigeur de cuisine", "quantity": 1, "unitPrice": 74.9 }],
+    "total": 74.9
+  },
+  {
+    "id": "ORD-1005", "customerEmail": "marco@demo.test", "status": "refunded",
+    "orderedAt": "2026-08-11", "deliveredAt": "2026-08-15",
+    "items": [{ "name": "Tabouret de bar", "quantity": 2, "unitPrice": 45 }],
+    "total": 90
+  },
+  {
+    "id": "ORD-1006", "customerEmail": "lucia@demo.test", "status": "confirmed",
+    "orderedAt": "2026-11-24",
+    "items": [{ "name": "Peinture blanche mate 10 L", "quantity": 1, "unitPrice": 59.9 }],
+    "total": 59.9
+  },
+  {
+    "id": "ORD-1007", "customerEmail": "lucia@demo.test", "status": "delivered",
+    "orderedAt": "2026-10-01", "deliveredAt": "2026-10-05",
+    "items": [{ "name": "Plan de travail chêne sur mesure", "quantity": 1, "unitPrice": 219 }],
+    "total": 219
+  },
+  {
+    "id": "ORD-1008", "customerEmail": "lucia@demo.test", "status": "shipped",
+    "orderedAt": "2026-11-18", "estimatedDelivery": "2026-11-27",
+    "items": [{ "name": "Kit de joints silicone", "quantity": 3, "unitPrice": 8.9 }],
+    "total": 26.7
+  }
+]

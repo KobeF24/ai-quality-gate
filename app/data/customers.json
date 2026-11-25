@@ -1,0 +1,5 @@
+[
+  { "email": "lea@demo.test", "firstName": "Léa", "language": "fr" },
+  { "email": "marco@demo.test", "firstName": "Marco", "language": "it" },
+  { "email": "lucia@demo.test", "firstName": "Lucía", "language": "es" }
+]

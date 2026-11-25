@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Aide Commande</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 42rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; }
+    section { border: 1px solid #ccc; border-radius: 8px; padding: 1rem; margin-bottom: 1rem; }
+    label { display: block; margin-top: .5rem; font-weight: 600; }
+    input, textarea { width: 100%; box-sizing: border-box; padding: .5rem; font: inherit; }
+    button { margin-top: .75rem; padding: .5rem 1rem; font: inherit; cursor: pointer; }
+    .error { color: #b00020; }
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+  <header><h1>Aide Commande</h1></header>
+  <main>
+    <section id="login-section" aria-labelledby="login-title">
+      <h2 id="login-title">Se connecter</h2>
+      <form id="login-form" novalidate>
+        <label for="login-email">Email</label>
+        <input id="login-email" name="email" type="email" autocomplete="email">
+        <label for="login-order">Numéro de commande</label>
+        <input id="login-order" name="orderId" type="text" placeholder="ORD-1001">
+        <button type="submit">Se connecter</button>
+        <p id="login-error" class="error" role="alert" hidden></p>
+      </form>
+    </section>
+
+    <section id="account-section" aria-labelledby="greeting" hidden>
+      <h2 id="greeting"></h2>
+      <p id="last-order"></p>
+      <h3>Mes commandes</h3>
+      <ul id="orders-list" aria-label="Mes commandes"></ul>
+      <button id="logout-button" type="button">Se déconnecter</button>
+    </section>
+
+    <section aria-labelledby="chat-title">
+      <h2 id="chat-title">Posez votre question</h2>
+      <form id="chat-form" novalidate>
+        <label for="question">Votre question</label>
+        <textarea id="question" name="message" rows="3" aria-describedby="question-error"></textarea>
+        <p id="question-error" class="error" hidden>Saisissez une question avant d'envoyer.</p>
+        <button type="submit">Envoyer</button>
+      </form>
+      <p id="loading" role="status" hidden>Réponse en cours…</p>
+      <div id="chat-error" role="alert" hidden>
+        <p class="error">L'assistant est momentanément indisponible.</p>
+        <button id="retry-button" type="button">Réessayer</button>
+      </div>
+      <div id="reply" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <script type="module">
+    const $ = (id) => document.getElementById(id);
+    let lastMessage = '';
+
+    async function loadAccount() {
+      const me = await fetch('/api/me');
+      const connected = me.ok;
+      $('login-section').hidden = connected;
+      $('account-section').hidden = !connected;
+      if (!connected) return;
+      const { firstName, lastOrder } = await me.json();
+      $('greeting').textContent = `Bonjour ${firstName}`;
+      $('last-order').textContent = lastOrder
+        ? `Dernière commande : ${lastOrder.id} — ${lastOrder.statusLabel} — ${lastOrder.total.toFixed(2)} €`
+        : 'Aucune commande.';
+      const orders = await (await fetch('/api/orders')).json();
+      $('orders-list').replaceChildren(...orders.map((o) => {
+        const li = document.createElement('li');
+        li.textContent = `${o.id} — ${o.statusLabel}`;
+        return li;
+      }));
+    }
+
+    $('login-form').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: $('login-email').value, orderId: $('login-order').value }),
+      });
+      $('login-error').hidden = res.ok;
+      if (!res.ok) { $('login-error').textContent = (await res.json()).error; return; }
+      await loadAccount();
+    });
+
+    $('logout-button').addEventListener('click', async () => {
+      await fetch('/api/logout', { method: 'POST' });
+      await loadAccount();
+    });
+
+    async function ask(message) {
+      lastMessage = message;
+      $('chat-error').hidden = true;
+      $('reply').textContent = '';
+      $('loading').hidden = false;
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message }),
+        });
+        if (!res.ok) throw new Error(String(res.status));
+        $('reply').textContent = (await res.json()).reply;
+      } catch {
+        $('chat-error').hidden = false;
+      } finally {
+        $('loading').hidden = true;
+      }
+    }
+
+    $('chat-form').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const message = $('question').value.trim();
+      const empty = message === '';
+      $('question').setAttribute('aria-invalid', String(empty));
+      $('question-error').hidden = !empty;
+      if (!empty) await ask(message);
+    });
+
+    $('retry-button').addEventListener('click', () => ask(lastMessage));
+
+    loadAccount();
+  </script>
+</body>
+</html>
