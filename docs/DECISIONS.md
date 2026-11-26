@@ -14,9 +14,20 @@ Format : décision · pourquoi · prix accepté. Les décisions D1-D11 de la spe
 | 2026-11-25 | Endpoints ajoutés : `POST /api/logout`, `GET /api/me`, `GET /api/orders` | Nécessaires à T7 (bandeau + dernière commande), T9 (liste) et T10 (logout) | API un peu plus large que §3.4 |
 | 2026-11-25 | Seed/delete exigent `X-Test-Seed: 1` **dans tous les modes**, et une session | Plus strict que §3.4 : aucune route d'écriture accessible sans intention de test explicite | — |
 | 2026-11-25 | Commandes tenues **en mémoire** (copie de `orders.json`) | Le seeding des tests ne modifie jamais les fichiers de données | Les commandes seedées disparaissent au redémarrage — voulu |
-| 2026-11-25 | `npm test` avec `--pass-with-no-tests` **temporairement** | Les 10 tests arrivent en PR#2 ; la CI doit être verte dès PR#1 | À retirer en PR#2 |
+| 2026-11-25 | `npm test` avec `--pass-with-no-tests` en PR#1 | La CI devait être verte avant l'arrivée des tests | **Retiré en PR#2** |
 | 2026-11-25 | Modèle app par défaut : `claude-haiku-5-5` (surchargeable via `ANTHROPIC_MODEL`) | §15.4 : identifiant classe Haiku actuel | À revérifier si Anthropic publie un nouveau Haiku |
 | 2026-11-25 | Comptes de démo en `@demo.test` | `.test` est un domaine réservé : aucune adresse réelle possible | — |
+
+## PR#2 — les 10 tests
+
+| Date | Décision | Pourquoi | Prix |
+|---|---|---|---|
+| 2026-11-25 | T4 : le retard est piloté par `page.route` qui attend une promesse libérée par le test | Aucune attente arbitraire : le test décide quand la réponse arrive (§5.1, zéro `waitForTimeout`) | Le retard est simulé côté navigateur, pas côté serveur |
+| 2026-11-25 | T3 : `page.route(..., { times: 1 })` — seul le premier appel échoue | Prouve que « Réessayer » relance vraiment une requête qui aboutit | — |
+| 2026-11-25 | Les commandes seedées ont une date fixe ancienne (2000-01-01) | Une commande seedée ne devient jamais « la dernière commande » : T7/T8 restent stables quand T9 tourne en parallèle | La date d'une commande de test n'est pas réaliste — sans importance |
+| 2026-11-25 | La fixture utilise `page.request` (cookies du contexte navigateur) | La commande seedée appartient bien au client connecté via `storageState` | — |
+| 2026-11-25 | La zone de réponse porte `role="region"` + `aria-label` | Permet un locator par rôle (§5.1) au lieu d'un sélecteur CSS ; meilleur pour les lecteurs d'écran | — |
+| 2026-11-25 | T10 : après logout, la page affiche le formulaire de connexion, y compris après rechargement | L'app est une page unique : « rediriger vers le login » = l'espace client est remplacé par le formulaire | Pas de route `/login` séparée (§3.6 : app volontairement minimale) |
 
 ## Points ouverts relevés dans la spec
 

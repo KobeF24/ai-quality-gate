@@ -60,7 +60,9 @@ export function seedOrder(email: string): Order {
     id: `ORD-T-${randomUUID()}`,
     customerEmail: email,
     status: 'confirmed',
-    orderedAt: new Date().toISOString().slice(0, 10),
+    // Fixed old date: a seeded order must never become the customer's "last order",
+    // otherwise parallel tests asserting on the last order would flake.
+    orderedAt: '2000-01-01',
     items: [{ name: 'Article de test', quantity: 1, unitPrice: 10 }],
     total: 10,
   };
