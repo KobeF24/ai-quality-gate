@@ -1,6 +1,7 @@
 # yaml-language-server: $schema=https://promptfoo.dev/config-schema.json
 # Evaluates the whole app in MODE=live over HTTP (spec D5): system prompt + order context + model.
-# Start the app first: `npm run start:live`, then `npm run eval`.
+# Start the app first: `npm run start:live`, then `npm run eval` (tuning set).
+# Held-out control set, at checkpoints only: `npm run eval:control` (see evals/load-cases.ts).
 description: ai-quality-gate — Aide Commande (live)
 
 prompts:

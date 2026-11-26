@@ -1,18 +1,29 @@
-// Turns the human-readable case files (evals/cases/*.yaml) into Promptfoo test cases.
-// The mode of a case comes from its file name: m1-*.yaml -> M1, etc.
+// Turns the human-readable case files into Promptfoo test cases.
+//
+// Two sets, never mixed in one run (ISTQB CT-AI ch. 4: the test set is kept apart and never used to tune):
+// - tuning  (evals/cases/)   : cases we run, read and learn from. Fixes may be designed from them.
+// - control (evals/control/) : held-out cases, run only at checkpoints (`npm run eval:control`).
+//                              Their individual outputs are never used to design a fix.
+//
+// The mode of a case comes from its `mode` field, or else from its file name: m1-*.yaml -> M1, etc.
 import { readdirSync, readFileSync } from 'node:fs';
 import { parse } from 'yaml';
 
 type Lang = 'fr' | 'it' | 'es';
+type CaseSet = 'tuning' | 'control';
 
 interface EvalCase {
   id: string;
+  mode?: string;
   source?: string;
   draft?: boolean;
   lang: Lang;
   session: string;
   input: string;
   expected: string;
+  // Metamorphic cases only (mode MT): the family they belong to and the fact that must not change.
+  family?: string;
+  fact?: string;
 }
 
 interface Assertion {
@@ -21,9 +32,12 @@ interface Assertion {
   metric: string;
 }
 
-const casesDir = new URL('./cases/', import.meta.url);
+const SET_DIRS: Record<CaseSet, URL> = {
+  tuning: new URL('./cases/', import.meta.url),
+  control: new URL('./control/', import.meta.url),
+};
 
-// One-sentence rubric, to be calibrated (spec §6.4). Never "the answer is good".
+// One-sentence rubrics, to be calibrated (spec §6.4 + confusion-matrix rule in docs/CALIBRATION.md).
 // Hardened after F-08: a reply that claims to transfer the request itself must fail,
 // because the app has no such mechanism.
 const ESCALATION_RUBRIC =
@@ -50,30 +64,50 @@ function modeAssertions(mode: string, evalCase: EvalCase): Assertion[] {
     case 'H':
       // Happy path: the per-case expectation is the rubric (useful AND grounded).
       return [{ type: 'llm-rubric', value: evalCase.expected, metric: 'H' }];
+    case 'MT':
+      // Metamorphic relation: same fact as the source case, whatever the language, tone or wording.
+      return [{ type: 'javascript', value: 'file://assertions/contains-fact.mjs', metric: 'MT' }];
     default:
       // M4 relies on language-match, applied to every case in defaultTest.
       return [];
   }
 }
 
+function selectedSet(): CaseSet {
+  return process.env.EVAL_SET === 'control' ? 'control' : 'tuning';
+}
+
 export function loadCases(): unknown[] {
-  return readdirSync(casesDir)
+  const set = selectedSet();
+  const dir = SET_DIRS[set];
+  return readdirSync(dir)
     .filter((file) => file.endsWith('.yaml'))
     .sort()
     .flatMap((file) => {
-      const mode = file.split('-')[0]?.toUpperCase() ?? 'UNKNOWN';
-      const cases = parse(readFileSync(new URL(file, casesDir), 'utf8')) as EvalCase[];
-      return cases.map((evalCase) => ({
-        description: `${evalCase.id} — ${evalCase.input}`,
-        vars: {
-          input: evalCase.input,
-          session: evalCase.session,
-          lang: evalCase.lang,
-          expected: evalCase.expected,
-        },
-        metadata: { id: evalCase.id, mode, source: evalCase.source ?? 'generated', draft: !!evalCase.draft },
-        assert: modeAssertions(mode, evalCase),
-      }));
+      const fileMode = file.split('-')[0]?.toUpperCase() ?? 'UNKNOWN';
+      const cases = parse(readFileSync(new URL(file, dir), 'utf8')) as EvalCase[];
+      return cases.map((evalCase) => {
+        const mode = evalCase.mode?.toUpperCase() ?? fileMode;
+        return {
+          description: `${evalCase.id} — ${evalCase.input}`,
+          vars: {
+            input: evalCase.input,
+            session: evalCase.session,
+            lang: evalCase.lang,
+            expected: evalCase.expected,
+            family: evalCase.family ?? '',
+            fact: evalCase.fact ?? '',
+          },
+          metadata: {
+            id: evalCase.id,
+            mode,
+            set,
+            source: evalCase.source ?? 'generated',
+            draft: !!evalCase.draft,
+          },
+          assert: modeAssertions(mode, evalCase),
+        };
+      });
     });
 }
 

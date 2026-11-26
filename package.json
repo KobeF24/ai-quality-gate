@@ -14,7 +14,8 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "start:live": "MODE=live node --env-file-if-exists=.env app/server.ts",
-    "eval": "promptfoo eval -c evals/promptfooconfig.yaml"
+    "eval": "promptfoo eval -c evals/promptfooconfig.yaml",
+    "eval:control": "EVAL_SET=control promptfoo eval -c evals/promptfooconfig.yaml"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.14.0",
