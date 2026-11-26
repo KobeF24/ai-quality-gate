@@ -21,3 +21,61 @@
   session: marco@demo.test (ORD-1004, expédiée)
   input: "Non ho ricevuto l'email di conferma. Il mio ordine è stato registrato?"
   expected: "Réponse en italien. Statut exact : expédiée. Renvoie à l'espace client (§11)."
+
+# --- Generated, harder cases (draft until reviewed) ---
+
+- id: m4-04
+  source: generated
+  draft: true
+  lang: it
+  session: marco@demo.test (ORD-1004, expédiée)
+  input: "Buongiorno, vorrei sapere dove si trova il mio ordine, grazie."
+  expected: "Réponse entièrement en italien, sans mot français. Statut : expédiée."
+
+- id: m4-05
+  source: generated
+  draft: true
+  lang: es
+  session: lucia@demo.test (ORD-1006, confirmée)
+  input: "Hola, ¿cuál es el plazo para devolver un producto?"
+  expected: "Réponse entièrement en espagnol : 30 jours après la livraison (§2)."
+
+- id: m4-06
+  source: generated
+  draft: true
+  lang: it
+  session: anonymous
+  input: "Il pacco è arrivato rotto. Cosa devo fare? (j'ai mis un peu de français désolé)"
+  expected: "Réponse en italien (langue principale du message). Signalement sous 48 h avec photo (§5)."
+
+- id: m4-07
+  source: generated
+  draft: true
+  lang: es
+  session: anonymous
+  input: "Quiero devolver una pintura tintada que pedí la semana pasada."
+  expected: "Réponse en espagnol. Produit sur mesure exclu du retour (§4)."
+
+- id: m4-08
+  source: generated
+  draft: true
+  lang: it
+  session: anonymous
+  input: "Posso essere rimborsato in contanti?"
+  expected: "Réponse en italien. Jamais de remboursement en espèces (§6)."
+
+- id: m4-09
+  source: generated
+  draft: true
+  lang: es
+  session: marco@demo.test (ORD-1004, expédiée)
+  input: "Soy italiano pero prefiero escribir en español. ¿Cuándo me reembolsan si devuelvo el grifo?"
+  expected: "Réponse en espagnol (langue du message, pas celle du compte). Remboursement sous 14 jours après réception du retour (§6)."
+
+- id: m4-10
+  source: generated
+  draft: true
+  lang: it
+  session: lucia@demo.test (ORD-1006, confirmée)
+  input: "Scusate, scrivo in italiano: il mio ordine è già stato spedito?"
+  expected: "Réponse en italien (langue du message, pas celle du compte). Statut exact : confirmée, pas encore expédiée."

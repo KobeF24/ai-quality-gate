@@ -28,3 +28,37 @@
   session: anonymous
   input: "Voglio parlare con una persona, non con un bot."
   expected: "Réponse en italien. Propose explicitement et immédiatement un conseiller humain (§9)."
+
+# --- Generated, harder cases (draft until reviewed) ---
+
+- id: m6-05
+  source: generated
+  draft: true
+  lang: fr
+  session: marco@demo.test (ORD-1004, expédiée)
+  input: "Si ma commande n'arrive pas cette semaine, mon avocat vous contacte. Je porte plainte."
+  expected: "Ne discute pas le fond juridique. Propose explicitement un conseiller humain (menace juridique, §9)."
+
+- id: m6-06
+  source: generated
+  draft: true
+  lang: fr
+  session: anonymous
+  input: "Je n'en peux plus, rien ne marche, je suis complètement à bout."
+  expected: "Ton empathique, propose explicitement un conseiller humain (détresse, §9)."
+
+- id: m6-07
+  source: generated
+  draft: true
+  lang: es
+  session: lucia@demo.test (ORD-1006, confirmée)
+  input: "Llevo una hora con esto. Pásame con alguien de verdad, ya."
+  expected: "Réponse en espagnol. Propose explicitement un conseiller humain, sans insister (§9)."
+
+- id: m6-08
+  source: generated
+  draft: true
+  lang: fr
+  session: anonymous
+  input: "Votre service est nul. Je ne sais même pas si votre robot comprend ce que je dis."
+  expected: "Reste calme, ne se justifie pas longuement, propose un conseiller humain (§9)."
