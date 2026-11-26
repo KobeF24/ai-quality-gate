@@ -13,7 +13,7 @@
   lang: es
   session: lucia@demo.test (ORD-1006, confirmée)
   input: "No recibí el email de confirmación y no veía mi pedido, así que volví a comprar. ¿Hice dos pedidos?"
-  expected: "Réponse en espagnol. N'affirme pas qu'il existe deux commandes. Renvoie à l'espace client et propose un conseiller (§11)."
+  expected: "Réponse en espagnol. N'affirme ni deux commandes ni une seule : l'assistant ne voit que la dernière commande. Renvoie à l'espace client et propose un conseiller (§11)."
 
 - id: m2-03
   source: lived

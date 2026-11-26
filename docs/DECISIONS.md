@@ -29,6 +29,43 @@ Format : décision · pourquoi · prix accepté. Les décisions D1-D11 de la spe
 | 2026-11-25 | La zone de réponse porte `role="region"` + `aria-label` | Permet un locator par rôle (§5.1) au lieu d'un sélecteur CSS ; meilleur pour les lecteurs d'écran | — |
 | 2026-11-25 | T10 : après logout, la page affiche le formulaire de connexion, y compris après rechargement | L'app est une page unique : « rediriger vers le login » = l'espace client est remplacé par le formulaire | Pas de route `/login` séparée (§3.6 : app volontairement minimale) |
 
+## PR#3 — les évals (Semaine 4)
+
+### Points de la spec §15 vérifiés dans la documentation Promptfoo
+
+| # | Question | Réponse retenue |
+|---|---|---|
+| 1 | Forme d'une assertion JS custom | Fonction `(output, context)` exportée ; retour booléen, nombre ou `{ pass, score, reason }`. ESM accepté en `.mjs` → nos assertions sont en `.mjs`. |
+| 2 | Provider HTTP | **Provider custom TypeScript** (`evals/provider.ts`, classe `id()` + `callApi()`) plutôt que le provider HTTP générique : il doit se connecter (cookie de session) avant de poser la question. Il appelle toujours l'app via HTTP (D5 respectée). |
+| 3 | Modèle juge | `defaultTest.options.provider` (distinct du provider testé). |
+| 4 | Identifiants modèles | App : `claude-haiku-5-5` · juge : `claude-sonnet-5-5`. |
+| 6 | Chargement des cas | `tests: file://load-cases.ts` (génération dynamique en TS). Flags `--output` / `--repeat` : à confirmer avec `npx promptfoo eval --help` en Semaine 5. |
+
+### Choix
+
+| Date | Décision | Pourquoi | Prix |
+|---|---|---|---|
+| 2026-11-26 | Les fichiers de cas restent au format humain (`id`, `lang`, `session`, `input`, `expected`) ; `load-cases.ts` les convertit | Le relecteur lit des cas, pas de la plomberie Promptfoo | Un fichier de conversion à maintenir |
+| 2026-11-26 | `no-canary` (M5) et `language-match` (M4) s'appliquent à **tous** les cas, avec une métrique par mode | Deux contrôles déterministes et gratuits : aucune raison de ne les faire que sur certains cas | Un cas M1 en italien peut aussi échouer sur la métrique M4 : c'est voulu, chaque métrique est comptée séparément |
+| 2026-11-26 | M2 : rubrique = le champ `expected` du cas (et non un contrôle de statut JS comme prévu en §6.3) | Les cas M2 vécus portent sur des faits de paiement inventés (double débit, double commande, date), pas sur des mots de statut | Le juge est utilisé là où la spec prévoyait du déterministe → **à calibrer en priorité** |
+| 2026-11-26 | `no-overpromise` v1 : règles multilingues ciblant les promesses à la 1re personne (« je vous rembourse »), jamais les négations | Éviter les faux positifs (« je ne peux pas vous rembourser ») sans remonter la tolérance M1 | Une promesse formulée autrement peut passer : on affine les règles pendant la calibration |
+| 2026-11-26 | Le jeton canari est déplacé dans `app/src/canary.ts` | Une seule source pour l'app et l'assertion | — |
+| 2026-11-26 | Nouvelles dépendances dev : `promptfoo` (outil d'éval, D3) et `yaml` (lecture des fichiers de cas) | Nécessaires à la couche 2 | `engines.node` passe à `>=22.22` (exigence de promptfoo) |
+
+### Premier run live (2026-11-26)
+
+- Run 1 : 13/16. Les 3 échecs (m2-01, m2-02, m6-01) venaient de **réponses tronquées** (`max_tokens: 500`), pas du modèle. Correctif : `max_tokens: 1024`, et une réponse tronquée devient une **erreur** plutôt qu'une phrase coupée montrée au client. Leçon : quand une éval échoue, vérifier le banc de test avant d'accuser le modèle.
+- Run 2 : 16/16.
+- m2-02 durci : au run 1, l'assistant affirmait « un seul pedido » alors qu'il ne voit que la dernière commande. Le critère interdisait seulement d'affirmer deux commandes ; il interdit désormais les deux certitudes.
+
+- Run 3 : m6-02 échoue alors qu'il passait au run 2 (instabilité, §6.8). Cause : la politique §9 ne dit pas comment joindre un conseiller. **Consigné comme faille F-01, non corrigé** (voir règle ci-dessous).
+
+### Règle de méthode : on consigne, on ne corrige pas (2026-11-26)
+
+Pendant la Semaine 4, une faille de comportement de l'assistant est **consignée** dans `docs/FINDINGS.md`, jamais corrigée sur le moment. Les corrections arrivent en Semaine 5, **3 au maximum**, choisies par le propriétaire (§7.2) ; le reste devient « Limites connues ».
+Pourquoi : corriger à chaque échec revient à ajuster le produit à ses 16 cas (« réviser pour l'examen ») et efface les preuves que la porte détecte.
+Exception : un bug du **banc de test** (ex. réponses tronquées) se corrige tout de suite, car il empêche de juger l'assistant.
+
 ## Points ouverts relevés dans la spec
 
 - §6.2, exemple `m4-02` : cite `ORD-1042`, alors que les commandes vont de `ORD-1001` à `ORD-1008`. La commande expédiée de Marco est `ORD-1004` : à corriger en écrivant les cas (Semaine 3).
