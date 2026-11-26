@@ -80,3 +80,30 @@
   session: anonymous
   input: "Puis-je ajouter un code promo après avoir payé ?"
   expected: "Non : un code se saisit avant le paiement et n'est jamais appliqué après (§12)."
+
+# --- Unnecessary escalation (ISTQB CT-AI ch. 8, autonomy: "intervention inutile") ---
+# The answer is in the policy or the order: the assistant must answer, not send the customer to an advisor.
+
+- id: h-11
+  source: generated
+  draft: true
+  lang: fr
+  session: lea@demo.test (ORD-1002, livrée)
+  input: "Je suis un peu perdue : ma commande ORD-1002, elle est bien livrée ?"
+  expected: "Confirme directement que la commande ORD-1002 est livrée. Ne renvoie pas vers un conseiller à la place de la réponse : elle figure dans les données."
+
+- id: h-12
+  source: generated
+  draft: true
+  lang: it
+  session: anonymous
+  input: "Entro quanto tempo posso restituire un prodotto? Devo chiamare qualcuno?"
+  expected: "Réponse en italien : 30 jours (§2). Dit qu'il n'est pas nécessaire de contacter un conseiller pour cela."
+
+- id: h-13
+  source: generated
+  draft: true
+  lang: es
+  session: anonymous
+  input: "Si el producto llegó defectuoso, ¿la devolución es gratuita? ¿Tengo que hablar con alguien?"
+  expected: "Réponse en espagnol : frais de retour gratuits si le produit est défectueux (§3). Ne renvoie pas vers un conseiller à la place de la réponse."

@@ -1,0 +1,132 @@
+# MT — Metamorphic testing (ISTQB CT-AI ch. 9).
+# Each family starts from a source case (an H case) and applies a transformation that must NOT
+# change the policy fact: translation (IT/ES), casual wording, anger.
+# Two uses: robustness (same fact whatever the wording) and equity (IT/ES customers get the same
+# answer as FR customers; language-match also runs on every case).
+# Initial tolerance: ≤ 1 failure (see docs/DECISIONS.md).
+
+# --- Family "delai-retour" — source: h-01 (30 jours, §2) ---
+
+- id: mt-01
+  source: generated
+  draft: true
+  family: delai-retour
+  fact: '\b30\b|trente|trenta|treinta'
+  lang: fr
+  session: anonymous
+  input: "Bon, j'ai combien de temps pour renvoyer un truc qui me plaît pas ?"
+  expected: "Même fait que h-01 : 30 jours après la livraison (§2). Transformation : registre familier."
+
+- id: mt-02
+  source: generated
+  draft: true
+  family: delai-retour
+  fact: '\b30\b|trente|trenta|treinta'
+  lang: fr
+  session: anonymous
+  input: "C'est la troisième fois que je pose la question !!! Combien de jours pour retourner un produit ???"
+  expected: "Même fait que h-01 : 30 jours (§2). Transformation : colère."
+
+- id: mt-03
+  source: generated
+  draft: true
+  family: delai-retour
+  fact: '\b30\b|trente|trenta|treinta'
+  lang: it
+  session: anonymous
+  input: "Quanti giorni ho per restituire un prodotto?"
+  expected: "Réponse en italien, même fait que h-01 : 30 jours (§2). Transformation : traduction."
+
+- id: mt-04
+  source: generated
+  draft: true
+  family: delai-retour
+  fact: '\b30\b|trente|trenta|treinta'
+  lang: es
+  session: anonymous
+  input: "¿Cuántos días tengo para devolver un producto?"
+  expected: "Réponse en espagnol, même fait que h-01 : 30 jours (§2). Transformation : traduction."
+
+# --- Family "delai-remboursement" — source: h-05 (14 jours après réception du retour, §6) ---
+
+- id: mt-05
+  source: generated
+  draft: true
+  family: delai-remboursement
+  fact: '\b14\b|quatorze|quattordici|catorce'
+  lang: fr
+  session: anonymous
+  input: "Une fois que vous avez reçu mon retour, je revois mon argent quand ?"
+  expected: "Même fait que h-05 : 14 jours après réception du retour (§6). Transformation : registre familier."
+
+- id: mt-06
+  source: generated
+  draft: true
+  family: delai-remboursement
+  fact: '\b14\b|quatorze|quattordici|catorce'
+  lang: fr
+  session: anonymous
+  input: "Vous avez reçu mon colis retour hier. Je veux mon argent, c'est pour quand ??"
+  expected: "Même fait que h-05 : 14 jours après réception (§6), sans remboursement immédiat. Transformation : impatience."
+
+- id: mt-07
+  source: generated
+  draft: true
+  family: delai-remboursement
+  fact: '\b14\b|quatorze|quattordici|catorce'
+  lang: it
+  session: anonymous
+  input: "Dopo che avete ricevuto il reso, entro quanto tempo mi rimborsate?"
+  expected: "Réponse en italien, même fait que h-05 : 14 jours (§6). Transformation : traduction."
+
+- id: mt-08
+  source: generated
+  draft: true
+  family: delai-remboursement
+  fact: '\b14\b|quatorze|quattordici|catorce'
+  lang: es
+  session: anonymous
+  input: "Después de recibir mi devolución, ¿en cuánto tiempo me reembolsan?"
+  expected: "Réponse en espagnol, même fait que h-05 : 14 jours (§6). Transformation : traduction."
+
+# --- Family "colis-abime" — source: h-04 (signalement sous 48 h avec photo, §5) ---
+
+- id: mt-09
+  source: generated
+  draft: true
+  family: colis-abime
+  fact: '\b48\b|quarante-huit|quarantotto|cuarenta y ocho'
+  lang: fr
+  session: anonymous
+  input: "Le carton est arrivé tout défoncé, je fais quoi et j'ai combien de temps ?"
+  expected: "Même fait que h-04 : signalement sous 48 h avec photo (§5). Transformation : registre familier."
+
+- id: mt-10
+  source: generated
+  draft: true
+  family: colis-abime
+  fact: '\b48\b|quarante-huit|quarantotto|cuarenta y ocho'
+  lang: fr
+  session: anonymous
+  input: "Colis ÉCRASÉ à la livraison. C'est inadmissible. Je fais quoi maintenant ?"
+  expected: "Même fait que h-04 : signalement sous 48 h avec photo (§5). Transformation : colère."
+
+- id: mt-11
+  source: generated
+  draft: true
+  family: colis-abime
+  fact: '\b48\b|quarante-huit|quarantotto|cuarenta y ocho'
+  lang: it
+  session: anonymous
+  input: "Stamattina mi è arrivato un pacco danneggiato: entro quando devo segnalarlo?"
+  expected: "Réponse en italien, même fait que h-04 : 48 h avec photo (§5). Transformation : traduction."
+
+- id: mt-12
+  source: generated
+  draft: true
+  family: colis-abime
+  fact: '\b48\b|quarante-huit|quarantotto|cuarenta y ocho'
+  lang: es
+  session: anonymous
+  input: "Mi paquete llegó dañado esta mañana. ¿Qué tengo que hacer?"
+  expected: "Réponse en espagnol, même fait que h-04 : 48 h avec photo (§5). Transformation : traduction."

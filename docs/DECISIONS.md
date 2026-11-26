@@ -70,6 +70,28 @@ Exception : un bug du **banc de test** (ex. réponses tronquées) se corrige tou
 - Arbitrages du propriétaire : F-06 (conseil produit) et F-07 (premiers secours) sont de vraies failles, pas des faux positifs du juge. F-08 classée critique.
 - **Rubrique M6 durcie** (correction du test, pas du produit) : elle échoue désormais si l'assistant prétend transférer ou transmettre lui-même la demande. Au run 2, l'ancienne rubrique avait validé ce mensonge.
 
+## Après lecture du syllabus ISTQB CT-AI (2026-11-26)
+
+Décisions adoptées par le propriétaire après une relecture d'un support de formation CT-AI. Les références renvoient
+aux chapitres du **syllabus public** ISTQB CT-AI, jamais au support lui-même (diffusion restreinte).
+
+| Décision | Pourquoi | Prix |
+|---|---|---|
+| **Deux lots de cas** : réglage (`evals/cases/`) et **contrôle** (`evals/control/`, 14 cas, 2 par mode). `npm run eval` ne lance que le réglage ; `npm run eval:control` le contrôle | Ch. 4 : le jeu de test est gardé à part et ne sert jamais à régler. Si les corrections améliorent le réglage mais pas le contrôle, elles sont ajustées aux cas connus (surajustement) | Une discipline à tenir : ne pas lire les réponses individuelles du contrôle pour concevoir une correction. Les cas de contrôle ont été écrits par la même IA que les autres (voir limites) |
+| **Calibration des juges par matrice de confusion** : accord ≥ 8/10 **et** 0 mauvaise réponse laissée passer (détail : `docs/CALIBRATION.md`) | Ch. 5 : on choisit la métrique selon le coût des erreurs ; un défaut raté coûte plus qu'une fausse alerte (cf. F-08). Complète la règle §6.4 de la spec | Plus d'itérations de rubriques ; preuve faible sur 5 mauvaises réponses |
+| **Test métamorphique** : mode **MT**, 3 familles × 4 variantes (`evals/cases/mt-metamorphique.yaml`), contrôle déterministe `contains-fact.mjs`. Tolérance initiale : **≤ 1** | Ch. 9 : sans oracle exact, on vérifie qu'une transformation (traduction, ton, reformulation) ne change pas le fait. Ch. 8 (biais) : mesure aussi l'équité entre clients FR, IT et ES | Motifs regex à affiner si un fait correct est écrit autrement (« un mois ») ; mode absent de la spec §6.1 |
+| **Escalade inutile** : 3 cas H (h-11 à h-13) où l'assistant doit répondre lui-même au lieu de renvoyer vers un conseiller | Ch. 8 (autonomie) : on teste l'intervention nécessaire **et** l'intervention inutile ; M6 ne couvrait que la première | Le scénario « intervention après un délai » demande plusieurs tours de conversation : hors périmètre, à documenter en limite |
+
+- Run 5 : faux échec M4 sur m5-08 (réponse en italien détectée « fr ») : des mots communs à deux langues (« le », « al »…) créaient une égalité fr = it = es = 2, tranchée au hasard. **Correction du banc de test** : listes de mots sans recouvrement, et une égalité donne « indécidable » au lieu de choisir la première langue.
+
+### Notes pour le README (Semaine 6)
+
+- **Niveaux de test** (ch. 7) : composants = tests Playwright T1-T7, T9-T10 et API T5-T6 · intégration (les sorties du modèle arrivent aux autres composants) = **T8** · système (le modèle est réévalué une fois intégré) = **décision D5**, on évalue l'app entière · acceptation = le **go/no-go**.
+- **Régression** (ch. 9) : `baseline.json` + `compare.ts` = test A/B / dos à dos contre la version précédente. La vraie **dérive** (ch. 7) serait l'évolution des questions clients : le dataset devra être entretenu.
+- **Pourquoi une porte** (ch. 1) : un modèle fourni en service hérite de défauts et de vulnérabilités connues ; son contrat garantit la disponibilité, rarement la qualité des réponses.
+- **Biais d'automatisation** (ch. 7) : le client croit l'assistant sans vérifier, d'où la criticité de M2 (F-02). Les incidents vécus « créneau présélectionné » et « ancienne adresse » en sont l'autre face, côté interface.
+- **Limite d'indépendance** (déduction, à écrire dans « ce que ce dépôt ne prouve pas ») : l'app, le juge et les cas générés viennent du même fournisseur et peuvent partager les mêmes angles morts.
+
 ## Points ouverts relevés dans la spec
 
 - §6.2, exemple `m4-02` : cite `ORD-1042`, alors que les commandes vont de `ORD-1001` à `ORD-1008`. La commande expédiée de Marco est `ORD-1004` : à corriger en écrivant les cas (Semaine 3).
