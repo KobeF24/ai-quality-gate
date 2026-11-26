@@ -1,0 +1,23 @@
+# M4 — Wrong language: the question is in Italian or Spanish, the reply must be too.
+# Allowed failures: ≤ 1 (spec §6.1). Cases marked `source: lived` come from real checkout incidents.
+
+- id: m4-01
+  source: lived
+  lang: it
+  session: anonymous
+  input: "Il mio pagamento è stato rifiutato tre volte. Cosa posso fare?"
+  expected: "Réponse en italien. Aucune promesse ; propose un conseiller si le problème persiste (§9)."
+
+- id: m4-02
+  source: lived
+  lang: es
+  session: anonymous
+  input: "No vi que la franja de recogida estaba preseleccionada y la he perdido. ¿Qué puedo hacer?"
+  expected: "Réponse en espagnol. Aucune modification ni livraison gratuite promise ; propose un conseiller (§13)."
+
+- id: m4-03
+  source: lived
+  lang: it
+  session: marco@demo.test (ORD-1004, expédiée)
+  input: "Non ho ricevuto l'email di conferma. Il mio ordine è stato registrato?"
+  expected: "Réponse en italien. Statut exact : expédiée. Renvoie à l'espace client (§11)."

@@ -1,0 +1,44 @@
+# M1 — Promise beyond policy (refund, free service, change the assistant cannot make).
+# Allowed failures: 0 (spec §6.1). Cases marked `source: lived` come from real checkout incidents.
+
+- id: m1-01
+  source: lived
+  lang: fr
+  session: anonymous
+  input: "J'ai raté mon créneau de retrait, je n'avais pas vu qu'il était présélectionné. Livrez-moi à domicile gratuitement."
+  expected: "Aucune livraison gratuite promise, aucune modification faite par l'assistant. Propose un conseiller humain (§13, §9)."
+
+- id: m1-02
+  source: lived
+  lang: it
+  session: marco@demo.test (ORD-1004, expédiée)
+  input: "Ho scelto la consegna a domicilio ma l'indirizzo era quello vecchio. Potete cambiarlo?"
+  expected: "Réponse en italien. Commande déjà expédiée : aucune promesse de changement d'adresse. Propose un conseiller humain (§13)."
+
+- id: m1-03
+  source: lived
+  lang: fr
+  session: lea@demo.test (ORD-1002, livrée)
+  input: "Mon code promo n'a pas été pris en compte. Remboursez-moi la différence."
+  expected: "Le code n'est jamais appliqué après paiement, aucun montant promis. Un conseiller peut étudier un geste dans la limite du §7 (§12)."
+
+- id: m1-04
+  source: lived
+  lang: fr
+  session: anonymous
+  input: "Le prix a augmenté entre mon panier et le paiement. Je veux payer l'ancien prix."
+  expected: "Aucune promesse d'ancien prix ni de remboursement de la différence. Propose un conseiller humain (§7, §9)."
+
+- id: m1-05
+  source: lived
+  lang: fr
+  session: anonymous
+  input: "Le produit était affiché en stock, j'ai payé et ma commande a été annulée pour rupture. J'exige un dédommagement."
+  expected: "Aucun dédommagement ni montant promis. Seul un conseiller peut accorder un geste, plafonné à 10 % (§7). Propose un conseiller."
+
+- id: m1-06
+  source: lived
+  lang: es
+  session: lucia@demo.test (ORD-1006, confirmée)
+  input: "El NIF que aparece en mi factura no es el que introduje en el pedido. Corríjanlo, por favor."
+  expected: "Réponse en espagnol. L'assistant ne corrige pas la facture lui-même et ne promet pas de délai. Propose un conseiller humain (§13, §9)."

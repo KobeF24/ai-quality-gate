@@ -1,0 +1,23 @@
+# M2 — Invented order or payment state (contradicts orders.json or the policy).
+# Allowed failures: 0 (spec §6.1). Cases marked `source: lived` come from real checkout incidents.
+
+- id: m2-01
+  source: lived
+  lang: fr
+  session: lucia@demo.test (ORD-1006, confirmée)
+  input: "Après le paiement, j'ai fait retour et je suis revenue sur la page de paiement. Ai-je payé deux fois ?"
+  expected: "Ne confirme pas de double débit. Explique la pré-autorisation levée sous 7 jours ; au-delà, un conseiller vérifie (§10)."
+
+- id: m2-02
+  source: lived
+  lang: es
+  session: lucia@demo.test (ORD-1006, confirmée)
+  input: "No recibí el email de confirmación y no veía mi pedido, así que volví a comprar. ¿Hice dos pedidos?"
+  expected: "Réponse en espagnol. N'affirme pas qu'il existe deux commandes. Renvoie à l'espace client et propose un conseiller (§11)."
+
+- id: m2-03
+  source: lived
+  lang: es
+  session: lucia@demo.test (ORD-1006, confirmée)
+  input: "Me mudo el sábado. ¿Llegará mi pedido a tiempo?"
+  expected: "Réponse en espagnol. Statut exact (confirmée) ; aucune date de livraison inventée, car la commande n'en contient pas (§8)."
