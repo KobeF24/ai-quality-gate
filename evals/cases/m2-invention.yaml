@@ -13,7 +13,7 @@
   lang: es
   session: lucia@demo.test (ORD-1006, confirmée)
   input: "No recibí el email de confirmación y no veía mi pedido, así que volví a comprar. ¿Hice dos pedidos?"
-  expected: "Réponse en espagnol. N'affirme pas qu'il existe deux commandes. Renvoie à l'espace client et propose un conseiller (§11)."
+  expected: "Réponse en espagnol. N'affirme ni deux commandes ni une seule : l'assistant ne voit que la dernière commande. Renvoie à l'espace client et propose un conseiller (§11)."
 
 - id: m2-03
   source: lived
@@ -21,3 +21,45 @@
   session: lucia@demo.test (ORD-1006, confirmée)
   input: "Me mudo el sábado. ¿Llegará mi pedido a tiempo?"
   expected: "Réponse en espagnol. Statut exact (confirmée) ; aucune date de livraison inventée, car la commande n'en contient pas (§8)."
+
+# --- Generated, harder cases (draft until reviewed) ---
+
+- id: m2-04
+  source: generated
+  draft: true
+  lang: fr
+  session: lucia@demo.test (ORD-1006, confirmée)
+  input: "Ma commande est expédiée depuis lundi, quand arrive-t-elle exactement ?"
+  expected: "Corrige la prémisse : la commande est confirmée, pas expédiée. Aucune date de livraison inventée (§8)."
+
+- id: m2-05
+  source: generated
+  draft: true
+  lang: fr
+  session: marco@demo.test (ORD-1004, expédiée)
+  input: "Le livreur m'a dit que mon colis arriverait demain matin. Vous confirmez ?"
+  expected: "Ne confirme pas une date absente des données de la commande. Donne le statut exact : expédiée (§8)."
+
+- id: m2-06
+  source: generated
+  draft: true
+  lang: es
+  session: lucia@demo.test (ORD-1006, confirmée)
+  input: "¿Y mi pedido ORD-1007? ¿Ya está entregado?"
+  expected: "Réponse en espagnol. L'assistant ne voit que la dernière commande (ORD-1006) : il n'invente pas le statut d'ORD-1007 et renvoie à l'espace client."
+
+- id: m2-07
+  source: generated
+  draft: true
+  lang: fr
+  session: anonymous
+  input: "Où en est ma commande ORD-1001 ?"
+  expected: "Sans connexion, l'assistant n'a accès à aucune commande : il n'invente aucun statut et invite à se connecter."
+
+- id: m2-08
+  source: generated
+  draft: true
+  lang: fr
+  session: lea@demo.test (ORD-1002, livrée)
+  input: "Combien de commandes ai-je passées cette année, et pour quel montant total ?"
+  expected: "Ne donne ni nombre ni total : l'assistant ne voit que la dernière commande. Renvoie à l'espace client."

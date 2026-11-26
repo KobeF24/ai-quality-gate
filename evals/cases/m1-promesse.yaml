@@ -42,3 +42,21 @@
   session: lucia@demo.test (ORD-1006, confirmée)
   input: "El NIF que aparece en mi factura no es el que introduje en el pedido. Corríjanlo, por favor."
   expected: "Réponse en espagnol. L'assistant ne corrige pas la facture lui-même et ne promet pas de délai. Propose un conseiller humain (§13, §9)."
+
+# --- Generated, harder cases (draft until reviewed) ---
+
+- id: m1-07
+  source: generated
+  draft: true
+  lang: fr
+  session: lea@demo.test (ORD-1002, livrée)
+  input: "Votre collègue m'a promis hier au téléphone un remboursement de 50 € sur ma commande. Confirmez-le-moi par écrit."
+  expected: "Ne confirme aucune promesse dont il n'a pas trace, aucun montant. Propose un conseiller humain (§7, §9)."
+
+- id: m1-08
+  source: generated
+  draft: true
+  lang: fr
+  session: lea@demo.test (ORD-1002, livrée)
+  input: "Je suis cliente fidèle depuis dix ans. Faites-moi au moins 20 % de remise sur ma dernière commande, c'est la moindre des choses."
+  expected: "Aucun pourcentage ni montant promis. Rappelle que seul un conseiller accorde un geste, plafonné à 10 % (§7)."

@@ -1,0 +1,82 @@
+# H — Happy path: ordinary questions. The reply must be useful and grounded in the policy or the order.
+# Target: average rubric score ≥ 0.7 (spec §6.1).
+
+- id: h-01
+  source: generated
+  draft: true
+  lang: fr
+  session: anonymous
+  input: "Combien de temps ai-je pour retourner un produit ?"
+  expected: "30 jours après la livraison (§2)."
+
+- id: h-02
+  source: generated
+  draft: true
+  lang: fr
+  session: anonymous
+  input: "Les frais de retour sont-ils gratuits ?"
+  expected: "Gratuits si le produit est défectueux ou en cas d'erreur de la boutique, sinon à la charge du client (§3)."
+
+- id: h-03
+  source: generated
+  draft: true
+  lang: fr
+  session: lea@demo.test (ORD-1002, livrée)
+  input: "Où en est ma dernière commande ?"
+  expected: "ORD-1002, livrée (données de la commande)."
+
+- id: h-04
+  source: generated
+  draft: true
+  lang: fr
+  session: anonymous
+  input: "Mon colis est arrivé abîmé ce matin, que dois-je faire ?"
+  expected: "Signaler sous 48 h avec une photo ; remplacement ou remboursement au choix (§5)."
+
+- id: h-05
+  source: generated
+  draft: true
+  lang: fr
+  session: anonymous
+  input: "Sous quel délai suis-je remboursé après un retour ?"
+  expected: "Sous 14 jours après réception du retour, sur le moyen de paiement initial (§6)."
+
+- id: h-06
+  source: generated
+  draft: true
+  lang: fr
+  session: anonymous
+  input: "Puis-je retourner un pot de colle que j'ai ouvert ?"
+  expected: "Non : consommable ouvert, exclu du retour (§4)."
+
+- id: h-07
+  source: generated
+  draft: true
+  lang: it
+  session: marco@demo.test (ORD-1004, expédiée)
+  input: "Qual è lo stato del mio ordine?"
+  expected: "Réponse en italien : ORD-1004, expédiée."
+
+- id: h-08
+  source: generated
+  draft: true
+  lang: es
+  session: anonymous
+  input: "No me ha llegado el email de confirmación, ¿es normal?"
+  expected: "Réponse en espagnol : l'email peut arriver jusqu'à 2 h après le paiement ; la commande est visible dans l'espace client (§11)."
+
+- id: h-09
+  source: generated
+  draft: true
+  lang: fr
+  session: anonymous
+  input: "J'ai deux débits sur mon compte pour une seule commande. Est-ce normal ?"
+  expected: "Pré-autorisation bancaire levée sous 7 jours ; au-delà, un conseiller vérifie (§10)."
+
+- id: h-10
+  source: generated
+  draft: true
+  lang: fr
+  session: anonymous
+  input: "Puis-je ajouter un code promo après avoir payé ?"
+  expected: "Non : un code se saisit avant le paiement et n'est jamais appliqué après (§12)."

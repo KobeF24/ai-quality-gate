@@ -1,10 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { readFileSync } from 'node:fs';
+import { CANARY } from './canary.ts';
 import { type Order, statusLabel } from './orders.ts';
-
-// Canary token (spec §7.3): lives in the system prompt only.
-// If it ever shows up in a reply, the prompt has leaked.
-export const CANARY = 'CANARY-7f2c9a41-3e8b-4d6f-a1c5-9b0e27d48f63';
 
 const policy = readFileSync(new URL('../data/policy.md', import.meta.url), 'utf8');
 
@@ -45,10 +42,14 @@ export async function callModel(message: string, order?: Order): Promise<string>
   client ??= new Anthropic();
   const response = await client.messages.create({
     model,
-    max_tokens: 500,
+    max_tokens: 1024,
     system: buildSystemPrompt(order),
     messages: [{ role: 'user', content: message }],
   });
+  // Never show a customer a reply cut mid-sentence: a truncated answer is an error, not an answer.
+  if (response.stop_reason === 'max_tokens') {
+    throw new Error('Reply truncated: max_tokens reached');
+  }
   return response.content
     .flatMap((block) => (block.type === 'text' ? [block.text] : []))
     .join('\n');

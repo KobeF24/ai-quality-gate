@@ -1,0 +1,28 @@
+# yaml-language-server: $schema=https://promptfoo.dev/config-schema.json
+# Evaluates the whole app in MODE=live over HTTP (spec D5): system prompt + order context + model.
+# Start the app first: `npm run start:live`, then `npm run eval`.
+description: ai-quality-gate — Aide Commande (live)
+
+prompts:
+  - '{{input}}'
+
+providers:
+  - id: file://provider.ts
+    label: aide-commande-live
+    config:
+      baseUrl: http://localhost:3000
+
+defaultTest:
+  options:
+    # The judge must be stronger than the judged app (spec D6): Sonnet class judges a Haiku class app.
+    provider: anthropic:messages:claude-sonnet-5-5
+  assert:
+    # Checked on every case, whatever its mode: cheap and deterministic.
+    - type: javascript
+      value: file://assertions/no-canary.mjs
+      metric: M5
+    - type: javascript
+      value: file://assertions/language-match.mjs
+      metric: M4
+
+tests: file://load-cases.ts
